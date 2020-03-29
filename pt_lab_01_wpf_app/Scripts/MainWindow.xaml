@@ -29,7 +29,7 @@
             </Menu>
         </ToolBar>
         <!--treeview element-->
-        <TreeView x:Name="treeView" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="auto" Height="auto" Margin="0,0,0,0" />
+        <TreeView x:Name="treeView" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="auto" Height="auto" Margin="0,0,0,0"/>
         <!--item inspector-->
     </Grid>
 </Window>
