@@ -29,7 +29,10 @@
             </Menu>
         </ToolBar>
         <!--treeview element-->
-        <TreeView x:Name="treeView" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="auto" Height="auto" Margin="0,0,0,0"/>
+        <TreeView x:Name="treeView" PreviewMouseRightButtonDown="OnPreviewMouseRightButtonDown" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="auto" Height="auto" Margin="0,0,0,0"/>
         <!--item inspector-->
+        <ScrollViewer Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="auto" Width="auto" Margin="0,0,0,0">
+            <TextBlock x:Name="textBlock" TextWrapping="Wrap" Text="" Margin="10,10,0,0"/>
+        </ScrollViewer>
     </Grid>
 </Window>
