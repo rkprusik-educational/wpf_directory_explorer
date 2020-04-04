@@ -64,44 +64,6 @@ namespace pt_lab_01_wpf_app
         }
 
         #region Interactions
-
-        //external
-        // Respond to the right mouse button down event by setting up a hit test results callback.
-        private void OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            //// Retrieve the coordinate of the mouse position.
-            //Point pt = e.GetPosition((UIElement)sender);
-
-            //// Clear the contents of the list used for hit test results.
-            //hitResultsList.Clear();
-
-            //// Set up a callback to receive the hit test result enumeration.
-            //VisualTreeHelper.HitTest(treeView, null,
-            //    new HitTestResultCallback(MyHitTestResult),
-            //    new PointHitTestParameters(pt));
-
-            //// Perform actions on the hit test results list.
-            //if (hitResultsList.Count > 0)
-            //{
-            //    System.Diagnostics.Debug.WriteLine("---HitRecount---");
-            //    hitResultsList.ForEach(item =>
-            //    {
-            //        if (item.GetType() == typeof(TextBlock))
-            //            System.Diagnostics.Debug.WriteLine("ItemHit: " + (item as TreeViewItem).Parent);
-            //    });
-            //}
-        }
-
-        // Return the result of the hit test to the callback.
-        //public HitTestResultBehavior MyHitTestResult(HitTestResult result)
-        //{
-        //    // Add the hit test result to the list that will be processed after the enumeration.
-        //    hitResultsList.Add(result.VisualHit);
-
-        //    // Set the behavior to return visuals at all z-order levels.
-        //    return HitTestResultBehavior.Continue;
-        //}
-
         private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             TreeViewItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
@@ -109,17 +71,10 @@ namespace pt_lab_01_wpf_app
             if (treeViewItem != null)
             {
                 treeViewItem.Focus();
+                //DebugOnRightClick(treeViewItem);
                 SetContextMenu(treeViewItem);
                 e.Handled = true;
             }
-        }
-
-        static TreeViewItem VisualUpwardSearch(DependencyObject source)
-        {
-            while (source != null && !(source is TreeViewItem))
-                source = VisualTreeHelper.GetParent(source);
-
-            return source as TreeViewItem;
         }
 
         public void OnMenuButtonOpenClick(object sender, RoutedEventArgs e)
@@ -171,7 +126,6 @@ namespace pt_lab_01_wpf_app
             }
             else
             {
-
                 Directory.Delete(item.Tag.ToString(), recursive: true);
                 if (item.Parent != null) (item.Parent as TreeViewItem).Items.Remove(item);
             }
@@ -180,6 +134,9 @@ namespace pt_lab_01_wpf_app
         private void OnCreateInFile(TreeViewItem file)
         {
             System.Diagnostics.Debug.WriteLine("Creating file: " + file.Tag);
+            var dialog = new Scripts.CreateFileDialog(file, file.Tag.ToString(), successCallback: AddTreeItem);
+            if (dialog.ShowDialog() == true)
+                System.Diagnostics.Debug.WriteLine("Create file dialog window closed");
         }
 
         private void OnOpenFile(TreeViewItem file)
@@ -194,6 +151,41 @@ namespace pt_lab_01_wpf_app
         #endregion Interactions
 
         #region Inner Mechanics
+        private void DebugOnRightClick(TreeViewItem file)
+        {
+            //check file attributes
+            {
+                //    if (IsFile(file) && file.Tag.ToString().Split('.').Last() == "txt")
+                //    {
+                //        System.Diagnostics.Debug.WriteLine("File[" + file.Tag.ToString() + "]: " + File.GetAttributes(file.Tag.ToString()));
+                //    }
+                //    else if (IsDirectory(file))
+                //    {
+                //        System.Diagnostics.Debug.WriteLine("Directory[" + file.Tag.ToString() + "]: " + (new DirectoryInfo(file.Tag.ToString())).Attributes);
+                //    }
+            }
+
+            //check attirbutes formula
+            {
+                //    System.Diagnostics.Debug.WriteLine("--------------------");
+                //    FileAttributes tempAttr = 0;
+                //    System.Diagnostics.Debug.WriteLine("Attr: " + tempAttr.ToString());
+                //    tempAttr |= FileAttributes.ReadOnly;
+                //    System.Diagnostics.Debug.WriteLine("Attr: " + tempAttr.ToString());
+                //    tempAttr |= FileAttributes.Archive;
+                //    System.Diagnostics.Debug.WriteLine("Attr: " + tempAttr.ToString());
+                //    tempAttr |= FileAttributes.Hidden;
+                //    System.Diagnostics.Debug.WriteLine("Attr: " + tempAttr.ToString());
+                //    tempAttr |= FileAttributes.System;
+                //    System.Diagnostics.Debug.WriteLine("Attr: " + tempAttr.ToString());
+                //    tempAttr |= FileAttributes.Directory;
+                //    System.Diagnostics.Debug.WriteLine("Attr: " + tempAttr.ToString());
+                //    tempAttr = FileAttributes.Normal;
+                //    System.Diagnostics.Debug.WriteLine("Attr: " + tempAttr.ToString());
+                //    System.Diagnostics.Debug.WriteLine("--------------------");
+            }
+        }
+
         private bool IsDirectory(TreeViewItem item)
         {
             if (Directory.Exists(item.Tag.ToString())) return true;
@@ -217,6 +209,40 @@ namespace pt_lab_01_wpf_app
             if (File.Exists(path)) return true;
             return false;
         }
+
+        private void GetAttributes(TreeViewItem item)
+        {
+            //if (selectedTreeViewItem == null)
+            //    selectedTreeViewItem = item;
+            //FileAttributes attributes = File.GetAttributes(selectedTreeViewItem.Tag.ToString());
+            //string rash = "";
+            //if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+            //    rash += "r";
+            //else
+            //    rash += "-";
+            //if ((attributes & FileAttributes.Archive) == FileAttributes.Archive)
+            //    rash += "a";
+            //else
+            //    rash += "-";
+            //if ((attributes & FileAttributes.System) == FileAttributes.System)
+            //    rash += "s";
+            //else
+            //    rash += "-";
+            //if ((attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+            //    rash += "h";
+            //else
+            //    rash += "-";
+            //textBlock1.Text = rash;
+        }
+
+        private TreeViewItem VisualUpwardSearch(DependencyObject source)
+        {
+            while (source != null && !(source is TreeViewItem))
+                source = VisualTreeHelper.GetParent(source);
+
+            return source as TreeViewItem;
+        }
+
 
         private void SetTreeRoot(string path)
         {
@@ -279,9 +305,13 @@ namespace pt_lab_01_wpf_app
         private void SetContextMenu(TreeViewItem file)
         {
             if (IsFile(file) && file.Tag.ToString().Split('.').Last() == "txt")
+            {
                 treeView.ContextMenu = textFileContextMenu;
+            }
             else if (IsDirectory(file))
+            {
                 treeView.ContextMenu = directoryContextMenu;
+            }
         }
         #endregion Inner Mechanics
     }
