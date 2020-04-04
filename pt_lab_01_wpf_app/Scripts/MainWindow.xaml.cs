@@ -148,6 +148,25 @@ namespace pt_lab_01_wpf_app
                 textBlock.Text = text;
             }
         }
+
+        private void OnSelectedItemChanged(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var path = ((e.Source as System.Windows.Controls.TreeView).SelectedItem as TreeViewItem).Tag.ToString();
+                if (IsFile(path))
+                {
+                    var attr = File.GetAttributes(path);
+                    statusText.Text = AttributesToRashString(attr);
+                }
+                else if (IsDirectory(path))
+                {
+                    var di = new DirectoryInfo(path);
+                    statusText.Text = AttributesToRashString(di.Attributes);
+                }
+            }
+            catch { statusText.Text = "NoFileSelected"; }
+        }
         #endregion Interactions
 
         #region Inner Mechanics
@@ -210,29 +229,26 @@ namespace pt_lab_01_wpf_app
             return false;
         }
 
-        private void GetAttributes(TreeViewItem item)
+        private string AttributesToRashString(FileAttributes attributes)
         {
-            //if (selectedTreeViewItem == null)
-            //    selectedTreeViewItem = item;
-            //FileAttributes attributes = File.GetAttributes(selectedTreeViewItem.Tag.ToString());
-            //string rash = "";
-            //if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
-            //    rash += "r";
-            //else
-            //    rash += "-";
-            //if ((attributes & FileAttributes.Archive) == FileAttributes.Archive)
-            //    rash += "a";
-            //else
-            //    rash += "-";
-            //if ((attributes & FileAttributes.System) == FileAttributes.System)
-            //    rash += "s";
-            //else
-            //    rash += "-";
-            //if ((attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
-            //    rash += "h";
-            //else
-            //    rash += "-";
-            //textBlock1.Text = rash;
+            string rash = "";
+            if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                rash += "r";
+            else
+                rash += "-";
+            if ((attributes & FileAttributes.Archive) == FileAttributes.Archive)
+                rash += "a";
+            else
+                rash += "-";
+            if ((attributes & FileAttributes.System) == FileAttributes.System)
+                rash += "s";
+            else
+                rash += "-";
+            if ((attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                rash += "h";
+            else
+                rash += "-";
+            return rash;
         }
 
         private TreeViewItem VisualUpwardSearch(DependencyObject source)

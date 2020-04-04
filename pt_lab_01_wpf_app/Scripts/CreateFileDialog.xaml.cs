@@ -43,8 +43,7 @@ namespace pt_lab_01_wpf_app.Scripts
 
                     var dirInfo = Directory.CreateDirectory(tempPath);
                     System.Diagnostics.Debug.WriteLine("Trying to create directory: " + tempPath);
-                    //dirInfo.Attributes = 
-                    GetDialogAttributes();
+                    dirInfo.Attributes = GetDialogAttributes();
                     successCallback?.Invoke(fileParent, tempPath);
                 }
                 catch { HandleCreationFailure(); }
@@ -56,11 +55,8 @@ namespace pt_lab_01_wpf_app.Scripts
                     var tempPath = filePath + "\\" + txtName.Text;
                     CheckPathAvailability(ref tempPath, isDirectory: false);
 
-                    using (var tempFile = File.Create(tempPath))
-                    {
-                    }
-                    //File.SetAttributes(tempPath, GetDialogAttributes());
-                    GetDialogAttributes();
+                    using (var tempFile = File.Create(tempPath)){}
+                    File.SetAttributes(tempPath, GetDialogAttributes());
                     System.Diagnostics.Debug.WriteLine("Trying to create file: " + tempPath);
                     successCallback?.Invoke(fileParent, tempPath);
                 }
